@@ -10,4 +10,9 @@ public class Config {
     public SendGrid sendGrid() {
         return new SendGrid(System.getenv("SENDGRID_API_KEY"));
     }
+
+    @Bean
+    public boolean allowNonRakenEmails() {
+        return Boolean.parseBoolean(System.getenv("ALLOW_NON_RAKEN_DOMAINS"));
+    }
 }

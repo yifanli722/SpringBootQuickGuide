@@ -23,6 +23,20 @@ public class EmailConfigPayload {
         this.Body = Body;
     }
 
+    public String filterNonRakenTargets() {
+        StringBuilder builder = new StringBuilder();
+        String rakenDomain = "rakenapp.com";
+        this.CC.stream().filter(cc -> !cc.endsWith(rakenDomain)).forEach(cc -> {
+            builder.append(cc).append(System.getProperty("line.separator"));
+        });
+        this.BCC.stream().filter(bcc -> !bcc.endsWith(rakenDomain)).forEach(bcc -> {
+            builder.append(bcc).append(System.getProperty("line.separator"));
+        });
+        if(!this.To.endsWith(rakenDomain))
+            builder.append(this.To).append(System.getProperty("line.separator"));
+        return builder.toString();
+    }
+
     public String getTo() {
         return To;
     }

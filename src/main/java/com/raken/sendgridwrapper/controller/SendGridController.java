@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -24,13 +25,34 @@ import java.util.Map;
 public class SendGridController {
     @Autowired
     private final SendGrid sg;
+    @Autowired
+    private final boolean allowNonRakenEmails;
 
-    public SendGridController(SendGrid sg) {
+    private final static String srcPath = System.getProperty("user.dir") + "/src/logs";
+
+    public SendGridController(SendGrid sg, boolean allowNonRakenEmails) {
         this.sg = sg;
+        this.allowNonRakenEmails = allowNonRakenEmails;
     }
 
     @PostMapping("sendEmail")
-    public ResponseEntity<Map<String, String>> sendEmail(@RequestBody EmailConfigPayload emailConfigPayload) {
+    public ResponseEntity<Map<String, String>> sendEmail(
+            @RequestBody EmailConfigPayload emailConfigPayload,
+            @RequestParam(value = "debug", defaultValue = "false") boolean debug
+    ) {
+        if (!allowNonRakenEmails) {
+            String nonRakenEmails = emailConfigPayload.filterNonRakenTargets();
+
+            if(!emailConfigPayload.getTo().endsWith("rakenapp.com")) {
+                String errMsg = String.format("Email's To (%s) is not to a raken domain." +
+                        "Resolve by setting env variable ALLOW_NON_RAKEN_DOMAINS to false " +
+                        "or modify email's recipient to a raken domain (rakenapp.com)", emailConfigPayload.getTo());
+                return new ResponseEntity<>(
+                        Collections.singletonMap("message", errMsg),
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+        }
         System.out.println(emailConfigPayload.toString());
         Mail mail = new Mail();
         Personalization personalization = new Personalization();
