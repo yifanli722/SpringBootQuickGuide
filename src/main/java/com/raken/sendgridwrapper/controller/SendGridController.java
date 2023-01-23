@@ -1,7 +1,9 @@
 package com.raken.sendgridwrapper.controller;
 
+import com.google.gson.Gson;
 import com.raken.sendgridwrapper.WriteLogUtil;
 import com.raken.sendgridwrapper.model.EmailConfigPayload;
+import com.raken.sendgridwrapper.model.Quote;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -10,6 +12,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import com.sendgrid.helpers.mail.objects.Personalization;
+import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +40,16 @@ public class SendGridController {
     @PostMapping("sendEmail")
     public ResponseEntity<Map<String, String>> sendEmail(
             @RequestBody EmailConfigPayload emailConfigPayload,
-            @RequestParam(value = "debug", defaultValue = "false") boolean debug
+            @RequestParam(value = "enrich", defaultValue = "false") boolean enrich
     ) {
+//        if(enrich) {
+//            try {
+//                String quote = fetchQuote();
+//                emailConfigPayload.enrichBody(quote);
+//            } catch (IOException e) {
+//                System.out.println("Unable to fetch quote, IOException");
+//            }
+//        }
         if (!allowNonRakenEmails) {
             String nonRakenEmails = emailConfigPayload.filterNonRakenTargets();
             WriteLogUtil.writeStringToFile(nonRakenEmails);
@@ -93,10 +104,7 @@ public class SendGridController {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            //Response response = sg.api(request);
-            Response response = new Response();
-            response.setBody("TestBody");
-            response.setStatusCode(200);
+            Response response = sg.api(request);
 
             System.out.println(response.getStatusCode());
             System.out.println(response.getBody());
@@ -119,6 +127,23 @@ public class SendGridController {
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    private String fetchQuote() throws IOException {
+        String urlString = "https://api.quotable.io/random";
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(urlString)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        okhttp3.Response response = client.newCall(request).execute();
+        String jsonData = response.body().string();
+        Gson gson = new Gson();
+        Quote quote = gson.fromJson(jsonData, Quote.class);
+        response.close();
+
+        return quote.toString();
+
     }
 
 }

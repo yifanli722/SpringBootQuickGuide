@@ -52,12 +52,13 @@ public class SendGridControllerTest {
 
         when(sendGridMock.api(any(Request.class))).thenReturn(mockResponse);
 
-        EmailConfigPayload emailConfigPayload = new EmailConfigPayload("test@example.com",
+        EmailConfigPayload emailConfigPayload = new EmailConfigPayload("test@rakenapp.com",
                 Arrays.asList("cc1@example.com", "cc2@example.com"),
                 Arrays.asList("bcc1@example.com", "bcc2@example.com"),
                 "Test Subject",
                 "<h1>Test Body</h1>");
 
+        String debug = objectMapper.writeValueAsString(emailConfigPayload);
         MvcResult result = mockMvc.perform(post("/sendEmail")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(emailConfigPayload)))

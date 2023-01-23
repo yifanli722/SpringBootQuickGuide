@@ -13,11 +13,14 @@ repositories {
 }
 
 dependencies {
+	implementation("com.squareup.okhttp3:okhttp:4.10.0")
+	implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.6'
 	implementation 'com.sendgrid:sendgrid-java:4.9.3'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'junit:junit:4.13.1'
 	implementation 'org.testng:testng:7.1.0'
+	implementation 'com.google.code.gson:gson:2.10.1'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
