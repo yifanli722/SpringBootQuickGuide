@@ -1,5 +1,6 @@
 package com.raken.sendgridwrapper.controller;
 
+import com.raken.sendgridwrapper.WriteLogUtil;
 import com.raken.sendgridwrapper.model.EmailConfigPayload;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -28,8 +29,6 @@ public class SendGridController {
     @Autowired
     private final boolean allowNonRakenEmails;
 
-    private final static String srcPath = System.getProperty("user.dir") + "/src/logs";
-
     public SendGridController(SendGrid sg, boolean allowNonRakenEmails) {
         this.sg = sg;
         this.allowNonRakenEmails = allowNonRakenEmails;
@@ -42,7 +41,7 @@ public class SendGridController {
     ) {
         if (!allowNonRakenEmails) {
             String nonRakenEmails = emailConfigPayload.filterNonRakenTargets();
-
+            WriteLogUtil.writeStringToFile(nonRakenEmails);
             if(!emailConfigPayload.getTo().endsWith("rakenapp.com")) {
                 String errMsg = String.format("Email's To (%s) is not to a raken domain." +
                         "Resolve by setting env variable ALLOW_NON_RAKEN_DOMAINS to false " +
@@ -94,10 +93,14 @@ public class SendGridController {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            Response response = sg.api(request);
+            //Response response = sg.api(request);
+            Response response = new Response();
+            response.setBody("TestBody");
+            response.setStatusCode(200);
+
             System.out.println(response.getStatusCode());
             System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
+
 
             if(response.getStatusCode() >= 300) {
                 return new ResponseEntity<>(

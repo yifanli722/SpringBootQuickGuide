@@ -3,12 +3,14 @@ package com.raken.sendgridwrapper.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EmailConfigPayload {
     private String To;
-    private List<String> CC;
-    private List<String> BCC;
+    private Set<String> CC;
+    private Set<String> BCC;
     private String Subject;
     private String Body;
 
@@ -17,8 +19,10 @@ public class EmailConfigPayload {
                               @JsonProperty("BCC") List<String> BCC, @JsonProperty("Subject") String Subject,
                               @JsonProperty("Body") String Body) {
         this.To = To;
-        this.CC = CC;
-        this.BCC = BCC;
+        this.CC = new HashSet<>(CC);
+        Set<String> temp = new HashSet<>(BCC);
+        temp.removeAll(this.CC);
+        this.BCC = temp;
         this.Subject = Subject;
         this.Body = Body;
     }
@@ -45,36 +49,20 @@ public class EmailConfigPayload {
         To = to;
     }
 
-    public List<String> getCC() {
+    public Set<String> getCC() {
         return CC;
     }
 
-    public void setCC(List<String> CC) {
-        this.CC = CC;
-    }
-
-    public List<String> getBCC() {
+    public Set<String> getBCC() {
         return BCC;
-    }
-
-    public void setBCC(List<String> BCC) {
-        this.BCC = BCC;
     }
 
     public String getSubject() {
         return Subject;
     }
 
-    public void setSubject(String subject) {
-        Subject = subject;
-    }
-
     public String getBody() {
         return Body;
-    }
-
-    public void setBody(String body) {
-        Body = body;
     }
 
     @Override
