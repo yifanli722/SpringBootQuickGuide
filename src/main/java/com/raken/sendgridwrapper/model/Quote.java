@@ -30,6 +30,6 @@ public class Quote {
     }
 
     public String toString() {
-        return String.format("%s\n-%s", content, author);
+        return String.format("%s - %s", content, author);
     }
 }
