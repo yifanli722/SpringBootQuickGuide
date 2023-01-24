@@ -42,14 +42,14 @@ public class SendGridController {
             @RequestBody EmailConfigPayload emailConfigPayload,
             @RequestParam(value = "enrich", defaultValue = "false") boolean enrich
     ) {
-//        if(enrich) {
-//            try {
-//                String quote = fetchQuote();
-//                emailConfigPayload.enrichBody(quote);
-//            } catch (IOException e) {
-//                System.out.println("Unable to fetch quote, IOException");
-//            }
-//        }
+        if(enrich) {
+            try {
+                String quote = fetchQuote();
+                emailConfigPayload.enrichBody(quote);
+            } catch (IOException e) {
+                System.out.println("Unable to fetch quote, IOException");
+            }
+        }
         if (!allowNonRakenEmails) {
             String nonRakenEmails = emailConfigPayload.filterNonRakenTargets();
             WriteLogUtil.writeStringToFile(nonRakenEmails);

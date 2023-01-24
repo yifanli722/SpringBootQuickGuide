@@ -58,14 +58,25 @@ public class SendGridControllerTest {
                 "Test Subject",
                 "<h1>Test Body</h1>");
 
-        String debug = objectMapper.writeValueAsString(emailConfigPayload);
         MvcResult result = mockMvc.perform(post("/sendEmail")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emailConfigPayload)))
+                        .content("{\n" +
+                                "    \"To\": \"yifanli722@rakenapp.com\",\n" +
+                                "    \"CC\": [\"test@gmail.com\", \"test2@gmail.com\"],\n" +
+                                "    \"BCC\": [\"test3@rakenapp.com\"],\n" +
+                                "    \"Subject\": \"Lorem Ipsum\",\n" +
+                                "    \"Body\": \"<!DOCTYPE html> <html> <head> <title>Lorem Ipsum</title> </head> <body> <h1>Lorem Ipsum</h1> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, leo eget bibendum congue, nibh ipsum gravida velit, vel blandit nibh nibh non orci.</p> <p>Sed auctor, velit id pellentesque tempus, magna libero convallis velit, vel euismod augue velit vel velit.</p> </body> </html>\"\n" +
+                                "}"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        assertEquals("Sent EmailConfigPayload{To='test@example.com', CC=[cc1@example.com, cc2@example.com], BCC=[bcc1@example.com, bcc2@example.com], Subject='Test Subject', Body='<h1>Test Body</h1>'}",
+        assertEquals("Sent EmailConfigPayload{\n" +
+                        "\tTo='yifanli722@rakenapp.com\n" +
+                        "\tCC=[]\n" +
+                        "\tBCC=[test3@rakenapp.com]\n" +
+                        "\tSubject='Lorem Ipsum\n" +
+                        "\tBody='<!DOCTYPE html> <html> <head> <title>Lorem Ipsum</title> </head> <body> <h1>Lorem Ipsum</h1> <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, leo eget bibendum congue, nibh ipsum gravida velit, vel blandit nibh nibh non orci.</p> <p>Sed auctor, velit id pellentesque tempus, magna libero convallis velit, vel euismod augue velit vel velit.</p> </body> </html>\n" +
+                        "}",
                 objectMapper.readTree(result.getResponse().getContentAsString()).get("message").asText());
     }
 }
