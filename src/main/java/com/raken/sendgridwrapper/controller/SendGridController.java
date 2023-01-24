@@ -40,7 +40,8 @@ public class SendGridController {
     @PostMapping("sendEmail")
     public ResponseEntity<Map<String, String>> sendEmail(
             @RequestBody EmailConfigPayload emailConfigPayload,
-            @RequestParam(value = "enrich", defaultValue = "false") boolean enrich
+            @RequestParam(value = "enrich", defaultValue = "false") boolean enrich,
+            @RequestParam(value = "dryrun", defaultValue = "false") boolean dryrun
     ) {
         if(enrich) {
             try {
@@ -104,11 +105,14 @@ public class SendGridController {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
-            Response response = sg.api(request);
-
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-
+            Response response;
+            if(!dryrun)
+                response = sg.api(request);
+            else {
+                response = new Response();
+                response.setStatusCode(200);
+                response.setBody("DRY RUN");
+            }
 
             if(response.getStatusCode() >= 300) {
                 return new ResponseEntity<>(
@@ -117,7 +121,7 @@ public class SendGridController {
                 );
             }
             return new ResponseEntity<>(
-                    Collections.singletonMap("message", String.format("Sent %s", emailConfigPayload.toString())),
+                    Collections.singletonMap("message", String.format("%sSent %s", dryrun ? "(Dry Run) " : "", emailConfigPayload.toString())),
                     HttpStatus.OK
             );
 
