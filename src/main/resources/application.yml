@@ -1,0 +1,11 @@
+server:
+  port: 3000
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/image_storage
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+

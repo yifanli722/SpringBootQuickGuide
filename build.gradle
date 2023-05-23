@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-group = 'com.raken'
+group = 'com.SpringDemo.ImageCrud'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '8'
 
@@ -13,11 +13,13 @@ repositories {
 }
 
 dependencies {
-	implementation("com.squareup.okhttp3:okhttp:4.10.0")
+	implementation 'org.apache.commons:commons-lang3:3.1'
 	implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.6'
 	implementation 'com.sendgrid:sendgrid-java:4.9.3'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'junit:junit:4.13.1'
 	implementation 'org.testng:testng:7.1.0'
 	implementation 'com.google.code.gson:gson:2.10.1'
