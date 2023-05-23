@@ -13,9 +13,6 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.apache.commons:commons-lang3:3.1'
-	implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.6'
-	implementation 'com.sendgrid:sendgrid-java:4.9.3'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.postgresql:postgresql'
