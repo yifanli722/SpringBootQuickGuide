@@ -13,7 +13,7 @@ import java.util.Map;
 
 /*
 Controller classes, Map Url -> Method
-Mark Methods with @GetMapping, @PostMapping, @PutMapping, or @DeleteMapping
+Mark Methods with @GetMapping, @PostMapping, @PutMapping, or @DeleteMapping for mapping
 */
 @RestController
 @RequestMapping("/api")
@@ -22,14 +22,14 @@ public class ImageController {
     /*
     Example of Spring constructor injection
     This class + its dependency (ImageService) is handled by Spring.
-    Autowired not needed when 1 constructor
+    @Autowired not needed when 1 constructor
      */
     private final ImageService imageService;
     public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
 
-    // Handles a GET at api/RetrieveImage/{imageHash}, imageHash is a path parameter and is retrieved with @PathVariable
+    // @PathVariable extracts {ImageHash} from url api/RetrieveImage/{imageHash}
     @GetMapping("/RetrieveImage/{imageHash}")
     public ResponseEntity<?> getImage(@PathVariable String imageHash) {
         Result<byte[]> retrievedImageResult = imageService.handleImageRetrieval(imageHash);
@@ -46,7 +46,7 @@ public class ImageController {
                 .body(resource);
     }
 
-    // Handles a Put at api/UploadImage, expects the post body to contain binary data
+    // @RequestBody extracts Post body data
     @PostMapping("/UploadImage")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestBody byte[] imageData) {
         Map<String, String> response = new HashMap<>();
@@ -60,4 +60,20 @@ public class ImageController {
         response.put("sha256", processImageResult.getResult());
         return builder.body(response);
     }
+
+    // @PathVariable extracts {ImageHash} from url api/DeleteImage/{imageHash}
+    @DeleteMapping("/DeleteImage/{sha256}")
+    public ResponseEntity<Map<String, String>> deleteImage(@PathVariable String sha256) {
+        Result<Boolean> deletionResult = imageService.handleImageDeletion(sha256);
+
+        Map<String, String> response = new HashMap<>();
+        if (deletionResult.getResult()) {
+            response.put("deleted", sha256);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("error", deletionResult.getErrorMsg());
+            return ResponseEntity.status(deletionResult.getStatusCode()).body(response);
+        }
+    }
+
 }

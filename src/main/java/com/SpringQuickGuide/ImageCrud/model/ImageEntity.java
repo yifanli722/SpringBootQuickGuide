@@ -5,6 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/*
+- Represents columns in a table.
+In this example
+sha256 (varchar) PK
+data (bytea)
+ */
 @Entity
 @Table(name = "image_storage")
 public class ImageEntity {

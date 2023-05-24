@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 
 /*
-Interacts with Databases through CRUD operations
-Implementations of methods are autofilled by Spring
+- Interacts with Databases
+- Implementations of methods are autofilled by Spring
 */
 @Repository
 public interface ImageRepository extends JpaRepository<ImageEntity, String> {
