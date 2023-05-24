@@ -16,7 +16,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /*
-Services contain code to handle REST requests intercepted by a controller.
+- Services contain code to handle REST requests intercepted by a controller.
+- May interact with repository, a separate class for handling DB operations
  */
 @Service
 public class ImageService {
@@ -61,6 +62,15 @@ public class ImageService {
         }
         ImageEntity retrievedImage = imageRepository.findBySha256(sha256);
         return new Result<>(retrievedImage.getData(), null, HttpStatus.OK);
+    }
+
+    public Result<Boolean> handleImageDeletion(String sha256) {
+        try {
+            imageRepository.deleteById(sha256);
+            return new Result<>(true, null, HttpStatus.OK);
+        } catch (Exception e) {
+            return new Result<>(false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private Result<byte[]> convertToJPEG(byte[] imageData) throws IOException {
