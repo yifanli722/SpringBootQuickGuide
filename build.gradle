@@ -5,8 +5,7 @@ plugins {
 }
 
 group = 'com.SpringDemo.ImageCrud'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+version = '1.0.0'
 
 repositories {
 	mavenCentral()

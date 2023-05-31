@@ -75,5 +75,4 @@ public class ImageController {
             return ResponseEntity.status(deletionResult.getStatusCode()).body(response);
         }
     }
-
 }
