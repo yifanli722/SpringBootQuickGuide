@@ -28,3 +28,17 @@ services:
       - postgres
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+
+  spring-app:
+    container_name: SpringApp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/image_storage
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
